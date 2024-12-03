@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FPSCharacterController : MonoBehaviour
 {
+    // Public settings for easy adjustment in the Inspector
     public float walkSpeed = 5f;
     public float runSpeed = 10f;
     public float crouchSpeed = 2.5f;
@@ -14,6 +15,7 @@ public class FPSCharacterController : MonoBehaviour
     public float crouchTransitionSpeed = 5f;
     public Transform cameraTransform;
 
+    // Internal variables
     private CharacterController characterController;
     private Vector3 velocity;
     private float gravity = -9.81f;
@@ -24,10 +26,13 @@ public class FPSCharacterController : MonoBehaviour
 
     void Start()
     {
+        // Get the CharacterController component
         characterController = GetComponent<CharacterController>();
 
+        // Lock the cursor to the game window and hide it
         Cursor.lockState = CursorLockMode.Locked;
 
+        // Initialize the target height to standing height
         targetHeight = standHeight;
     }
 
@@ -41,34 +46,43 @@ public class FPSCharacterController : MonoBehaviour
 
     void HandleMouseLook()
     {
+        // Get mouse input
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
+        // Rotate the camera up and down
         verticalRotation -= mouseY;
         verticalRotation = Mathf.Clamp(verticalRotation, -90f, 90f);
         cameraTransform.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);
 
+        // Rotate the player left and right
         transform.Rotate(Vector3.up * mouseX);
     }
 
     void HandleMovement()
     {
+        // Check if the player is grounded
         isGrounded = characterController.isGrounded;
 
         if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -2f;
+            velocity.y = -2f; // Ensure the player sticks to the ground
         }
 
+        // Get input for movement
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 
+        // Determine the desired movement direction
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
 
+        // Determine speed based on player state (walking, running, crouching)
         float speed = isCrouching ? crouchSpeed : (Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed);
 
+        // Move the character
         characterController.Move(move * speed * Time.deltaTime);
 
+        // Handle jumping
         if (Input.GetButtonDown("Jump") && isGrounded && !isCrouching)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
