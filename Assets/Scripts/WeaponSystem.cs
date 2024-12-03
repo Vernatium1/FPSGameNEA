@@ -17,14 +17,14 @@ public class WeaponSystem : MonoBehaviour
     [Header("Effects")]
     public GameObject hitEffectPrefab;
     public GameObject gunshotPrefab;
-    public GameObject bulletHolePrefab; // Bullet hole decal prefab
+    public GameObject bulletHolePrefab;
 
     [Header("Audio")]
     public AudioClip gunshotClip;
 
     [Header("Recoil Settings")]
-    public float recoilAmount = 0.1f; // Amount of recoil
-    public float recoilSpeed = 5f; // Speed of recoil return to default position
+    public float recoilAmount = 0.1f;
+    public float recoilSpeed = 5f;
 
     private bool isAiming = false;
     private int currentAmmo;
@@ -33,7 +33,6 @@ public class WeaponSystem : MonoBehaviour
     private Transform weaponHolder;
     private AudioSource audioSource;
 
-    // Recoil management
     private Vector3 recoilPosition;
 
     void Start()
@@ -51,10 +50,10 @@ public class WeaponSystem : MonoBehaviour
 
     void Update()
     {
-        HandleShooting        HandleAiming();
+        HandleShooting();        
+        HandleAiming();
         HandleReloading();
 
-        // Apply recoil movement (return to default position)
         weaponHolder.localPosition = Vector3.Lerp(weaponHolder.localPosition, recoilPosition, Time.deltaTime * recoilSpeed);
     }
 
@@ -69,7 +68,7 @@ public class WeaponSystem : MonoBehaviour
     void Shoot()
     {
         nextFireTime = Time.time + fireRate;
-       Ammo--;
+        Ammo--;
 
         if (muzzleFlash) muzzleFlash.Play();
         if (audioSource && gunshotClip) audioSource.Play();
@@ -79,20 +78,17 @@ public class WeaponSystem : MonoBehaviour
             Instantiate(gunshotPrefab, muzzlePoint.position, muzzlePoint.rotation);
         }
         
-        // Apply recoil effect: offset the gun position upward
         recoilPosition = defaultPosition + new Vector3(0f, recoilAmount, 0f);
 
         RaycastHit hit;
         if (Physics.Raycast(muzzlePoint.position, muzzlePoint.forward, hit, Mathf.Infinity, hitMask))
         {
-            // Spawn the hit effect (e.g., sparks, dust, etc.)
             if (hitEffectPrefab)
             {
                 GameObject hitEffect = Instantiate(hitEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
                 Destroy(hitEffect, 2f); 
             }
 
-            // Spawn bullet hole at the point of impact
             if (bulletHolePrefab)
             {
                 SpawnBulletHole(hit.point, hit.normal);
@@ -100,13 +96,10 @@ public class WeaponSystem : MonoBehaviour
         }
     }
 
-    // to spawn bullet hole decal at the impact point
     void SpawnBulletHole(Vector3 hitPoint, Vector3 hitNormal)
     {
-        // Instantiate the bullet hole at the hit point and orient it correctly
         GameObject bulletHole = Instantiate(bulletHolePrefab, hitPoint, Quaternion.LookRotation(hitNormal));
         
-        // Optionally, destroy the bullet hole after a short time to avoid clutter
         Destroy(bulletHole, 5f);
     }
 
@@ -136,7 +129,7 @@ public class WeaponSystem : MonoBehaviour
     public void Reload()
     {
         current = maxAmmo;
-        recoilPosition = defaultPosition; // Reset recoil when reloading
+        recoilPosition = defaultPosition;
         Debug.Log("Reloaded!");
     }
 }
