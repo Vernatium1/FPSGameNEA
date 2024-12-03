@@ -17,6 +17,7 @@ public class WeaponSystem : MonoBehaviour
     [Header("Effects")]
     public GameObject hitEffectPrefab;
     public GameObject gunshotPrefab;
+    public GameObject bulletHolePrefab; // Bullet hole decal prefab
 
     [Header("Audio")]
     public AudioClip gunshotClip;
@@ -63,20 +64,31 @@ public class WeaponSystem : MonoBehaviour
         if (audioSource && gunshotClip) audioSource.Play();
 
         if (gunshotPrefab)
+ if (Physics.Raycast(muzzlePoint.position, muzzlePoint.forward, out hit, Mathf.Infinity, hitMask))
         {
-            Instantiate(gunshotPrefab, muzzlePoint.position, muzzlePoint.rotation);
-        }
-        
-        RaycastHit hit;
-        if (Physics.Raycast(muzzlePoint.position, muzzlePoint.forward, out hit, Mathf.Infinity, hitMask))
-        {
-            
+            // Spawn the hit effect (e.g., sparks, dust, etc.)
             if (hitEffectPrefab)
             {
                 GameObject hitEffect = Instantiate(hitEffectPrefab, hit.point, Quaternion.LookRotation(hit.normal));
                 Destroy(hitEffect, 2f); 
             }
+
+            // Spawn bullet hole at the point of impact
+            if (bulletHolePrefab)
+            {
+                SpawnBulletHole(hit.point, hit.normal);
+            }
         }
+    }
+
+    // Function to spawn bullet hole decal at the impact point
+    void SpawnBulletHole(Vector3 hitPoint, Vector3 hitNormal)
+    {
+        // Instantiate the bullet hole at the hit point and orient it correctly
+        GameObject bulletHole = Instantiate(bulletHolePrefab, hitPoint, Quaternion.LookRotation(hitNormal));
+        
+        // Optionally, destroy the bullet hole after a short time to avoid clutter
+        Destroy(bulletHole, 5f);
     }
 
     void HandleAiming()
