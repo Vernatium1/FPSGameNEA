@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 2967850731429166986}
   - component: {fileID: 3758221017118478131}
   - component: {fileID: 4493613188729403021}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: MuzzleFlashEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5144,6 +5144,7 @@ GameObject:
   - component: {fileID: 4568292360232846302}
   - component: {fileID: 1673506866413437426}
   - component: {fileID: 5483580859692084307}
+  - component: {fileID: 5483917970128064574}
   m_Layer: 0
   m_Name: M16
   m_TagString: Untagged
@@ -5238,12 +5239,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isActiveWeapon: 0
+  weaponDamage: 25
   isShooting: 0
   readyToShoot: 0
   shootingDelay: 0.15
   bulletsPerBurst: 1
   burstBulletsLeft: 0
-  spreadIntensity: 0.25
+  spreadIntensity: 0
+  hipSpreadIntensity: 0.6
+  adsSpreadIntensity: 0.1
   bulletPrefab: {fileID: 5697789753521658003, guid: 42790b1819059c04583600970feba889, type: 3}
   bulletSpawn: {fileID: 1598172514068254349}
   bulletVelocity: 700
@@ -5297,6 +5301,27 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!65 &5483917970128064574
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5030287775121070050}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 1
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.069193006, y: 0.24935536, z: 0.73665446}
+  m_Center: {x: -0.0031794917, y: -0.0036302384, z: 0.02763812}
 --- !u!1 &5448026705942351996
 GameObject:
   m_ObjectHideFlags: 0
@@ -5306,7 +5331,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1598172514068254349}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: BulletSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}

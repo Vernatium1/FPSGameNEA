@@ -11,6 +11,10 @@ public class WeaponManager : MonoBehaviour
 
     public GameObject activeWeaponSlot;
 
+    [Header("Ammo")]
+    public int totalRifleAmmo = 0;
+    public int totalPistolAmmo = 0;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -55,6 +59,7 @@ public class WeaponManager : MonoBehaviour
 
     public void PickupWeapon(GameObject pickedupWeapon)
     {
+        SetLayerRecursively(pickedupWeapon, LayerMask.NameToLayer("WeaponRender"));
         AddWeaponIntoActiveSlot(pickedupWeapon);
     }
 
@@ -80,6 +85,8 @@ public class WeaponManager : MonoBehaviour
         if (activeWeaponSlot.transform.childCount > 0)
         {
             var weaponToDrop = activeWeaponSlot.transform.GetChild(0).gameObject;
+
+            SetLayerRecursively(weaponToDrop, LayerMask.NameToLayer("Default"));
 
             weaponToDrop.GetComponent<Weapon>().isActiveWeapon = false;
             weaponToDrop.GetComponent<Weapon>().animator.enabled = false;
@@ -107,5 +114,54 @@ public class WeaponManager : MonoBehaviour
         }
     }
 
+    internal void PickupAmmo(AmmoBox ammo)
+    {
+        switch (ammo.ammoType)
+        {
+            case AmmoBox.AmmoType.PistolAmmo:
+                totalPistolAmmo += ammo.ammoAmount;
+                break;
+            case AmmoBox.AmmoType.RifleAmmo:
+                totalRifleAmmo += ammo.ammoAmount;
+                break;
+        }
+    }
+
+    internal void DecreaseTotalAmmo(int bulletsToDecrease, Weapon.WeaponModel thisWeaponModel)
+    {
+        switch (thisWeaponModel)
+        {
+            case Weapon.WeaponModel.M16:
+                totalRifleAmmo -= bulletsToDecrease;
+                break;
+            case Weapon.WeaponModel.Pistol1911:
+                totalPistolAmmo -= bulletsToDecrease;
+                break;
+        }
+    }
+
+    public int CheckAmmoLeftFor(Weapon.WeaponModel thisWeaponModel)
+    {
+        switch (thisWeaponModel)
+        {
+            case Weapon.WeaponModel.M16:
+                return totalRifleAmmo;
+            case Weapon.WeaponModel.Pistol1911:
+                return totalPistolAmmo;
+            
+            default:
+                return 0;
+        }
+    }
+
+    private void SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        if (obj == null) return;
+        obj.layer = newLayer;
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, newLayer);
+        }
+    }
 
 }

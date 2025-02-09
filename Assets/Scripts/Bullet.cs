@@ -4,25 +4,25 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+
+    public int bulletDamage;
+
     private void OnCollisionEnter(Collision ObjectWeHit)
     {
         if (ObjectWeHit.gameObject.CompareTag("Target"))
         {
-            print("Hit " + ObjectWeHit.gameObject.name + " !");
-
             CreateBulletImpactEffect(ObjectWeHit);
 
             Destroy(gameObject);
         }
 
-        if (ObjectWeHit.gameObject.CompareTag("Wall"))
+        if (ObjectWeHit.gameObject.CompareTag("Enemy"))
         {
-            print("Hit a wall");
-            
-            CreateBulletImpactEffect(ObjectWeHit);
+            ObjectWeHit.gameObject.GetComponent<Enemy>().TakeDamage(bulletDamage);
 
             Destroy(gameObject);
         }
+
     }
 
     void CreateBulletImpactEffect(Collision ObjectWeHit) 
@@ -36,10 +36,5 @@ public class Bullet : MonoBehaviour
             );
 
         hole.transform.SetParent(ObjectWeHit.gameObject.transform);
-
-
     }
-
-
-
 }
